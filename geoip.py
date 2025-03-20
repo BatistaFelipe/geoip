@@ -6,7 +6,7 @@ from urllib.request import urlopen
 import socket
 import os
 
-# receice a dns to validate and convert to an ip address
+# receive a dns to validate and convert to an ip address
 def convert_dns_to_ip(dns):
 	try:
 		return socket.gethostbyname(dns)
@@ -37,7 +37,7 @@ def execute_geoip(data):
 
 # read a file to execute a multiple consults at one time
 def get_from_file():
-	abspath = os.path.abspath(os.getcwd())
+	abspath = os.path.dirname(os.path.abspath(__file__))
 	txtfile = abspath + '/domains.txt'
 	with open(txtfile, 'r') as file:
 		for line in file:
