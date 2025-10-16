@@ -6,6 +6,8 @@ from urllib.request import urlopen
 import socket
 import os
 
+abspath = os.path.dirname(os.path.abspath(__file__))
+
 # receive a dns to validate and convert to an ip address
 def convert_dns_to_ip(dns):
 	try:
@@ -35,16 +37,25 @@ def execute_geoip(data):
 	string_data = geoip_toString(data)
 	print(string_data)
 
+def execute_geoip_from_file(ddns):
+	ip_addr = convert_dns_to_ip(ddns)
+	data = geoip(ip_addr)
+	string_data = ddns + ';' + data['ip'] + ';' + data['org'] + '\n'
+	save_to_file(string_data)
+
+def save_to_file(data):
+	txtfile = abspath + '/data.csv'
+	with open(txtfile, 'a') as file:
+		file.write(data)
+
 # read a file to execute a multiple consults at one time
 def get_from_file():
-	abspath = os.path.dirname(os.path.abspath(__file__))
 	txtfile = abspath + '/domains.txt'
 	with open(txtfile, 'r') as file:
 		for line in file:
 			line = line.strip()
-			print(line)
-			execute_geoip(line)
-			print('\n------------------\n')
+			execute_geoip_from_file(line)
+	print('Done!')
 
 def main():
 	# if program have parameters passed via terminal
@@ -63,6 +74,12 @@ def main():
 		
 		# else paremeter is not '-f' execute function with parameter passed via terminal
 		execute_geoip(sys.argv[1])
+		return
+
+	text = str(input('ddns.[TYPE-THIS].codeseg.io: '))
+	url = 'ddns.' + text + '.codeseg.io'
+	print(url)
+	execute_geoip(url)
 
 if __name__ == '__main__':
 	main()
